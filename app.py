@@ -4,7 +4,7 @@ import numpy as np
 
 # Page Settings
 st.set_page_config(
-    page_title="Weather Temperature Predictor",
+    page_title=""Temperature Predictor AI",
     page_icon="🌤️",
     layout="centered"
 )
