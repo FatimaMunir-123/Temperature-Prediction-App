@@ -35,9 +35,16 @@ h1 {
 model = pickle.load(open("temperature_prediction_model.pkl", "rb"))
 
 
-# Title
+# Header
 st.title("🌤️ Temperature Predictor AI")
+
+st.image(
+    "https://cdn-icons-png.flaticon.com/512/1163/1163661.png",
+    width=100
+)
+
 st.markdown("### AI-based temperature prediction using weather data")
+
 
 st.divider()
 
@@ -60,7 +67,9 @@ if st.button("🔮 Predict Temperature", use_container_width=True):
 
     prediction = model.predict(data)
 
-    st.success(f"🌡️ Predicted Temperature: **{prediction[0]:.2f} °C**")
+    st.success(
+        f"🌡️ Predicted Temperature: **{prediction[0]:.2f} °C**"
+    )
 
 
 st.markdown("---")
