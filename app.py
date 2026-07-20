@@ -2,76 +2,44 @@ import streamlit as st
 import pickle
 import numpy as np
 
-# Page Configuration
+# Load the trained model
+with open("diabetes_model.pkl", "rb") as file:
+    model = pickle.load(file)
+
+# Load feature names
+with open("features.pkl", "rb") as file:
+    features = pickle.load(file)
+
+# Page configuration
 st.set_page_config(
-    page_title="Temperature Predictor AI",
-    page_icon="🌤️",
+    page_title="Diabetes Prediction App",
+    page_icon="🩺",
     layout="centered"
 )
 
-# Background Styling
-st.markdown("""
-<style>
-.stApp {
-    background-image: url("https://images.unsplash.com/photo-1534088568595-a066f410bcda");
-    background-size: cover;
-    background-position: center;
-}
+st.title("🩺 Diabetes Prediction System")
+st.write("Enter the patient's health information to predict diabetes.")
 
-h1 {
-    text-align: center;
-    font-size: 32px;
-}
+# User Inputs
+pregnancies = st.number_input("Pregnancies", min_value=0, max_value=20, value=1)
+glucose = st.number_input("Glucose", min_value=0, max_value=300, value=120)
+blood_pressure = st.number_input("Blood Pressure", min_value=0, max_value=200, value=70)
+skin_thickness = st.number_input("Skin Thickness", min_value=0, max_value=100, value=20)
+insulin = st.number_input("Insulin", min_value=0, max_value=900, value=80)
+bmi = st.number_input("BMI", min_value=0.0, max_value=70.0, value=25.0)
+diabetes_pedigree = st.number_input("Diabetes Pedigree Function", min_value=0.0, max_value=3.0, value=0.5)
+age = st.number_input("Age", min_value=1, max_value=120, value=30)
 
-.stButton button {
-    width: 100%;
-    border-radius: 10px;
-}
-</style>
-""", unsafe_allow_html=True)
+# Prediction Button
+if st.button("Predict"):
 
+    input_data = np.array([[pregnancies, glucose, blood_pressure,
+                            skin_thickness, insulin, bmi,
+                            diabetes_pedigree, age]])
 
-# Load Model
-model = pickle.load(open("temperature_prediction_model.pkl", "rb"))
+    prediction = model.predict(input_data)
 
-
-# Header
-st.title("🌤️ Temperature Predictor AI")
-
-st.image(
-    "https://cdn-icons-png.flaticon.com/512/1163/1163661.png",
-    width=100
-)
-
-st.markdown("### AI-based temperature prediction using weather data")
-
-
-st.divider()
-
-
-# Inputs
-humidity = st.number_input("💧 Humidity", value=0.89)
-pressure = st.number_input("🌡️ Pressure", value=1.0286)
-cloud_cover = st.number_input("☁️ Cloud Cover", value=8.0)
-global_radiation = st.number_input("☀️ Global Radiation", value=0.20)
-sunshine = st.number_input("🌞 Sunshine", value=0.0)
-
-
-st.divider()
-
-
-# Prediction
-if st.button("🔮 Predict Temperature", use_container_width=True):
-
-    data = np.array([[humidity, pressure, cloud_cover, global_radiation, sunshine]])
-
-    prediction = model.predict(data)
-
-    st.success(
-        f"🌡️ Predicted Temperature: **{prediction[0]:.2f} °C**"
-    )
-
-
-st.markdown("---")
-
-st.caption("Developed by Fatima Munir | Machine Learning Project")
+    if prediction[0] == 1:
+        st.error("⚠️ The patient is likely to have Diabetes.")
+    else:
+        st.success("✅ The patient is not likely to have Diabetes.")
